@@ -1,6 +1,8 @@
 package com.dayu.pattern.prototype;
 
-public class Product implements Cloneable{
+import java.io.*;
+
+public class Product implements Cloneable,Serializable{
     private String name;
     private PcC pcC;
 
@@ -22,6 +24,29 @@ public class Product implements Cloneable{
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        try {
+            return deepClone();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Object deepClone() throws IOException {
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(this);
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            Product o = (Product)ois.readObject();
+
+            return o;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

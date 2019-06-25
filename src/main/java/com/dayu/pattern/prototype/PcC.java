@@ -2,7 +2,9 @@ package com.dayu.pattern.prototype;
 
 import com.dayu.pattern.factory.Milk;
 
-public class PcC{
+import java.io.Serializable;
+
+public class PcC implements Serializable{
     private String name;
 
 
