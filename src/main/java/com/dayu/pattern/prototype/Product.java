@@ -29,6 +29,7 @@ public class Product implements Cloneable,Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public Object deepClone() throws IOException {
