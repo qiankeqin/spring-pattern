@@ -20,7 +20,6 @@ public class Father {
     }
 
     public static void main(String[] args) {
-        Son son = new Son("1234");
-        Father father = new Father(son);
+        Father father = new Father(new Son());
     }
 }

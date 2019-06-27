@@ -5,15 +5,11 @@ package com.dayu.pattern.proxy;
  * @Description: DESCRIPTION
  * @date 2019-06-26 19:37
  */
-public class Son {
+public class Son implements Person{
 
-    private String name;
 
-    public Son(String name) {
-        this.name = name;
-    }
-
-    public void find(){
+    @Override
+    public void find() {
         System.out.println("son find");
     }
 }
