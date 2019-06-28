@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  * @Description: DESCRIPTION
  * @date 2019-06-28 13:19
  */
-public class CustomMM implements GPInvocationHandler{
+public class CustomProxy implements GPInvocationHandler{
 
     private Person target;
 

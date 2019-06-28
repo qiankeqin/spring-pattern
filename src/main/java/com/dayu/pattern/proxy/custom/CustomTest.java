@@ -10,7 +10,7 @@ import com.dayu.pattern.proxy.Son;
  */
 public class CustomTest {
     public static void main(String[] args) {
-        Person person   = (Person)new CustomMM().getInstance(new Son());
+        Person person   = (Person)new CustomProxy().getInstance(new Son());
         person.find();
 
     }
