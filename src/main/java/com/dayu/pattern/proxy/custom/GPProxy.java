@@ -2,9 +2,15 @@ package com.dayu.pattern.proxy.custom;
 
 import sun.misc.ProxyGenerator;
 
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -19,7 +25,7 @@ public class GPProxy {
     private static final String tab = "    ";
 
 
-    public static Object newProxyInstance(GPClassLoader classLoader,Class<?>[] interfaces,GPInvocationHandler gpInvocationHandler){
+    public static Object newProxyInstance(GPClassLoader classLoader,Class<?>[] interfaces,GPInvocationHandler gpInvocationHandler) throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         //1 动态生产源代码.java文件
         String src = generateSrc(interfaces);
         //2。Java文件输出到磁盘
@@ -35,12 +41,22 @@ public class GPProxy {
 
 
         //3。把生产到Java文件变异成.class文件
+        JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
+        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
+        Iterable iterable = fileManager.getJavaFileObjects(file);
+        JavaCompiler.CompilationTask task = javaCompiler.getTask(null, fileManager, null, null, null, iterable);
+        task.call();
+        fileManager.close();
+
 
         //4。编译生产到.class文件加载到Jvm中
+        Class $Proxy0 = classLoader.findClass("$Proxy0");
+        Constructor constructor = $Proxy0.getConstructor(GPInvocationHandler.class);
+        file.delete();
 
         //5。返回字节码重组以后到新到代理对象
 
-        return null;
+        return constructor.newInstance(gpInvocationHandler);
     }
 
     /**
@@ -64,7 +80,7 @@ public class GPProxy {
             sb.append(tab + tab + "try {" + ln);
             sb.append(tab + tab + tab + "Method m = " + interfaces[0].getName() + ".class.getMethod(\""+method.getName()+"\",new Class[]{});" + ln);
             sb.append(tab + tab + tab + "this.h.invoke(this,m,null);" + ln);
-            sb.append(tab + tab + "} catch(Exception e) {"+ln);
+            sb.append(tab + tab + "} catch(Throwable e) {"+ln);
             sb.append(tab + tab + tab + "e.printStackTrace();" + ln);
             sb.append(tab + tab + "}" + ln);
         }

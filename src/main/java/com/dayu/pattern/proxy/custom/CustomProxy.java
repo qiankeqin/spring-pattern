@@ -2,6 +2,8 @@ package com.dayu.pattern.proxy.custom;
 
 import com.dayu.pattern.proxy.Person;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -13,7 +15,7 @@ public class CustomProxy implements GPInvocationHandler{
 
     private Person target;
 
-    public Object getInstance(Person target){
+    public Object getInstance(Person target) throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
         this.target = target;
         Class<?> clazz = target.getClass();
         return  GPProxy.newProxyInstance(new GPClassLoader(),clazz.getInterfaces(),this);
