@@ -12,21 +12,28 @@ import java.util.List;
  */
 public class MemberDao extends JdbcTemplate {
 
+    private JdbcTemplate jdbcTemplate = new JdbcTemplate(null);
+
     public MemberDao(DataSource dataSource) {
         super(dataSource);
     }
 
-    @Override
-    public Object processResult(ResultSet rs, int rowNum) {
-        Member member = new Member();
-        try {
-            member.setUserName(rs.getString("username"));
-            member.setPassword(rs.getString("password"));
+    public List<?> query(){
+        String sql = "select * from member";
+        return jdbcTemplate.execQuery(sql, new RowMapper() {
+            @Override
+            public Object mapRow(ResultSet rs, int rowNum) throws Exception {
+                Member member = new Member();
+                try {
+                    member.setUserName(rs.getString("username"));
+                    member.setPassword(rs.getString("password"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
-        return member;
+                return member;
+            }
+        },null);
     }
 }
